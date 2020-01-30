@@ -28,5 +28,12 @@ public class PlayerMovement : MonoBehaviour
 
         // apply a force, get the player moving
         rb.velocity = new Vector2(hMovement * speed, vMovement * speed);
+
+        // Keep the player on the screen
+        // Mathf.clamp
+        float yValue = Mathf.Clamp(rb.position.y, -4.6f, 4.6f);
+        float xValue = Mathf.Clamp(rb.position.x, -11.0f, 11.0f);
+
+        rb.position = new Vector2(xValue, yValue);
     }
 }

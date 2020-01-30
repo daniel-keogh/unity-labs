@@ -5,6 +5,22 @@ using UnityEngine;
 // Use this to manage the collisions
 public class Enemy : MonoBehaviour
 {
+    // Used from the GameContoller
+    public int ScoreValue { 
+        get {
+            return scoreValue; 
+        }
+    }
+
+    [SerializeField] private int scoreValue = 10;
+
+    // Set this to publish an event to the system when killed.
+    // Delegate method to use for the event
+    public delegate void EnemyKilled(Enemy enemy);
+
+    // static method to be implemented in the listener
+    public static EnemyKilled EnemyKilledEvent;
+
     private void OnTriggerEnter2D(Collider2D whatHitMe)
     {
         // parameter = what ran into me
@@ -32,8 +48,18 @@ public class Enemy : MonoBehaviour
 
             // destroy the bullet
             Destroy(bullet.gameObject);
+
+            // publish the event to the system to give the player points
+            PublishEnemyKilledEvent();
+
             // destroy this GameObject
             Destroy(gameObject);
         }
+    }
+
+    private void PublishEnemyKilledEvent()
+    {
+        // Make sure somebody is listening
+        EnemyKilledEvent?.Invoke(this);
     }
 }
