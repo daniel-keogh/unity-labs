@@ -13,6 +13,9 @@ public class Enemy : MonoBehaviour
     }
 
     [SerializeField] private int scoreValue = 10;
+    [SerializeField] private GameObject explosionFX;
+
+    private float explosionDuration = 0.2f;
 
     // Set this to publish an event to the system when killed.
     // Delegate method to use for the event
@@ -52,6 +55,10 @@ public class Enemy : MonoBehaviour
             // publish the event to the system to give the player points
             PublishEnemyKilledEvent();
 
+            // show the explosion
+            GameObject explosion = Instantiate(explosionFX, transform.position, transform.rotation);
+
+            Destroy(explosion, explosionDuration);
             // destroy this GameObject
             Destroy(gameObject);
         }
