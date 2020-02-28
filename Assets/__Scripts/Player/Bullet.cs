@@ -6,14 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 public class Bullet : MonoBehaviour
 {
-    // public void OnBecameInvisible()
-    // {
-    //     Destroy(gameObject);
-    // }
+    // for identification only
+    //private void OnBecameInvisible()  // disappear when out of view
+    //{
+    //    Destroy(gameObject);
+    //}
 
-    // private void Update()
-    // {
-    //     // Destroy after 5 seconds
-    //     Destroy(gameObject, 5.0f);
-    // }
+    //private void Update() // destroy after 5 seconds
+    //{
+    //    Destroy(gameObject, 5.0f);
+    //}
+
 }

@@ -1,43 +1,61 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Use this to manage the collisions
+// use this to manage collisions
+
 public class Enemy : MonoBehaviour
 {
-    // Used from the GameContoller
-    public int ScoreValue { 
-        get {
-            return scoreValue; 
-        }
-    }
+    // == set this up to publish an event to the system
+    // == when killed
 
-    [SerializeField] private int scoreValue = 10;
     [SerializeField] private GameObject explosionFX;
+    [SerializeField] private float explosionDuration = 1.0f;
+    [SerializeField] private AudioClip crashSound;
+    // sounds for getting hit & for spawning
+    [SerializeField] private AudioClip dieSound;
+    [SerializeField] private AudioClip spawnSound;
 
-    private float explosionDuration = 0.2f;
+    // == public fields ==
+    // used from GameController enemy.ScoreValue
+    public int ScoreValue { get { return scoreValue; } }
 
-    // Set this to publish an event to the system when killed.
-    // Delegate method to use for the event
+    // delegate type to use for event
     public delegate void EnemyKilled(Enemy enemy);
 
-    // static method to be implemented in the listener
+    // create static method to be implemented in the listener
     public static EnemyKilled EnemyKilledEvent;
+
+
+    // == private fields ==
+    [SerializeField] private int scoreValue = 10;
+
+    private SoundController sc;
+
+    // == private methods ==
+    private void Start()
+    {
+        sc = SoundController.FindSoundController();
+        PlaySound(spawnSound);
+    }
 
     private void OnTriggerEnter2D(Collider2D whatHitMe)
     {
         // parameter = what ran into me
-        // if the player hits me, then destroy the player and the current enemy rectangle
+        // if the player hit, then destroy the player
+        // and the current enemy rectangle
+
         var player = whatHitMe.GetComponent<PlayerMovement>();
         var bullet = whatHitMe.GetComponent<Bullet>();
 
-        Debug.Log("I hit something");
+        Debug.Log("Hit Something");
 
-        if (player)
+        if (player)  // if (player != null)
         {
-            Debug.Log("It was the player");
-
             // play crash sound here
+            PlaySound(crashSound);
+
             // destroy the player and the rectangle
             // give the player points/coins
             Destroy(player.gameObject);
@@ -47,26 +65,34 @@ public class Enemy : MonoBehaviour
         if (bullet)
         {
             // play die sound
-            // give player points
+            PlaySound(dieSound);
 
-            // destroy the bullet
+            // destroy bulllet
             Destroy(bullet.gameObject);
-
             // publish the event to the system to give the player points
             PublishEnemyKilledEvent();
-
             // show the explosion
             GameObject explosion = Instantiate(explosionFX, transform.position, transform.rotation);
-
+            // destroy this game object
             Destroy(explosion, explosionDuration);
-            // destroy this GameObject
             Destroy(gameObject);
         }
     }
 
     private void PublishEnemyKilledEvent()
     {
-        // Make sure somebody is listening
-        EnemyKilledEvent?.Invoke(this);
+        // make sure somebody is listening
+        if (EnemyKilledEvent != null)
+        {
+            EnemyKilledEvent(this);
+        }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (sc)
+        {
+            sc.PlayOneShot(clip);
+        }
     }
 }

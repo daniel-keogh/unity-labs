@@ -8,12 +8,13 @@ public class PlayerMovement : MonoBehaviour
 
     // == private fields ==
     private Rigidbody2D rb;
-    private Transform t;
-    [SerializeField] private float speed = 15.0f;
 
-    // == public methods ==
+    private Camera gameCamera;
+    
+    [SerializeField] private float speed = 5.0f;
 
     // == private methods ==
+
 
     void Start()
     {
@@ -22,16 +23,17 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // if the player presses an arrow, then move
+        // add hMovement
+        // if the player presses the up arrow, then move
         float vMovement = Input.GetAxis("Vertical");
         float hMovement = Input.GetAxis("Horizontal");
-
-        // apply a force, get the player moving
-        rb.velocity = new Vector2(hMovement * speed, vMovement * speed);
-
-        // Keep the player on the screen
-        // Mathf.clamp
-        float yValue = Mathf.Clamp(rb.position.y, -4.6f, 4.6f);
+        // apply a force, get the player moving.
+        rb.velocity = new Vector2(hMovement * speed, 
+                                  vMovement * speed);
+        // keep the player on the screen
+        // float xValue = Mathf.clamp(value, min, max)
+        // rb.position.x 
+        float yValue = Mathf.Clamp(rb.position.y, -6.0f, 6.0f);
         float xValue = Mathf.Clamp(rb.position.x, -11.0f, 11.0f);
 
         rb.position = new Vector2(xValue, yValue);
