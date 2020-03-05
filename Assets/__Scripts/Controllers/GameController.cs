@@ -6,8 +6,17 @@ using TMPro;
 
 public class GameController : MonoBehaviour
 {
+    // == public fields ==
+    public int StartingLives
+    {
+        get { return startingLives; }
+    }
+
     //== private fields ==
     private int playerScore = 0;
+    private int remainingLives;
+    [SerializeField] private int startingLives = 3;
+
     [SerializeField] private TextMeshProUGUI scoreText;
 
     // == private methods ==
@@ -15,14 +24,18 @@ public class GameController : MonoBehaviour
     {
         SetupSingleton();
     }
+
     private void Start()
     {
+        remainingLives = startingLives;
         UpdateScore();
     }
+
     private void OnEnable()
     {
         Enemy.EnemyKilledEvent += OnEnemyKilledEvent;
     }
+
     private void OnDisable()
     {
         Enemy.EnemyKilledEvent -= OnEnemyKilledEvent;
@@ -56,5 +69,10 @@ public class GameController : MonoBehaviour
             // keep the new one
             DontDestroyOnLoad(gameObject); // persist across scenes
         }
+    }
+
+    public void LoseOneLife()
+    {
+        remainingLives--;
     }
 }
