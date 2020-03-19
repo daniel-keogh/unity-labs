@@ -20,6 +20,8 @@ public class Enemy : MonoBehaviour
     // == public fields ==
     // used from GameController enemy.ScoreValue
     public int ScoreValue { get { return scoreValue; } }
+    // used from PlayerHealth class
+    public int DamageValue { get { return damageValue; } }
 
     // delegate type to use for event
     public delegate void EnemyKilled(Enemy enemy);
@@ -30,6 +32,8 @@ public class Enemy : MonoBehaviour
 
     // == private fields ==
     [SerializeField] private int scoreValue = 10;
+    [SerializeField] private int damageValue = 5;
+
 
     private SoundController sc;
 
@@ -58,7 +62,7 @@ public class Enemy : MonoBehaviour
 
             // destroy the player and the rectangle
             // give the player points/coins
-            Destroy(player.gameObject);
+            // Destroy(player.gameObject);
             Destroy(gameObject);
         }
 

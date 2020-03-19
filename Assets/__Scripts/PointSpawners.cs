@@ -23,19 +23,25 @@ public class PointSpawners : MonoBehaviour
 
     private GameObject enemyParent;
 
+    // event for telling the system enemy spawned
+    public delegate void EnemySpawned();
+    public static event EnemySpawned EnemySpawnedEvent;
+
     //private ListUtils listUtils = new ListUtils();
 
     // == private methods ==
     private void Start()
     {
         enemyParent = GameObject.Find("EnemyParent");
-        if(!enemyParent)
+        if (!enemyParent)
         {
             enemyParent = new GameObject("EnemyParent");
         }
         // get the spawn points here
         spawnPoints = GetComponentsInChildren<SpawnPoint>();
         SpawnEnemyWaves();
+
+        EnableSpawning();
     }
 
     private void SpawnEnemyWaves()
@@ -49,13 +55,15 @@ public class PointSpawners : MonoBehaviour
     // stack version
     private void SpawnOneEnemy()
     {
-        if(spawnStack.Count == 0)
+        if (spawnStack.Count == 0)
         {
             spawnStack = ListUtils.CreateShuffledStack(spawnPoints);
         }
         var enemy = Instantiate(enemyPrefab, enemyParent.transform);
         var sp = spawnStack.Pop();
         enemy.transform.position = sp.transform.position;
+
+        PublishOnEnemySpawnedEvent();
     }
 
     //// use InvokeRepeating to spawn enemies
@@ -70,5 +78,18 @@ public class PointSpawners : MonoBehaviour
     //    enemy.transform.position = sp.transform.position;
     //}
 
+    public void PublishOnEnemySpawnedEvent()
+    {
+        EnemySpawnedEvent?.Invoke();
+    }
 
+    public void EnableSpawning()
+    {
+        InvokeRepeating(SPAWN_ENEMY_METHOD, spawnDelay, spawnInterval);
+    }
+
+    public void DisableSpawning()
+    {
+        CancelInvoke(SPAWN_ENEMY_METHOD);
+    }
 }
